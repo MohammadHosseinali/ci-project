@@ -1,15 +1,11 @@
 from flask import Flask, request
+from database import Database
 
 app = Flask(__name__)
-db = []
+db = Database()
 
-
-def helper_function(m: int, n: int) -> int:
+def helper_function(m, n):
     return m + n
-
-
-def add_to_database(username):
-    db.append(username)
 
 
 @app.route('/ping')
@@ -17,12 +13,32 @@ def ping():
     return {'status': 'ok'}
 
 
-@app.route('/add', methods=["POST"])
-def add_user():
-    username = request.json['username']
-    add_to_database(username)
-    return {'status': 'ok'}
+@app.route('/users', methods=["POST"])
+def create_user():
+    data = request.get_json()
+
+    username = data['username']
+    firstname = data['firstname']
+    lastname = data['lastname']
+
+    db.add_user(username, firstname, lastname)
+
+    return {
+        "username": username,
+        "firstname": firstname,
+        "lastname": lastname
+    }, 201
+
+
+@app.route('/users/<username>', methods=["GET"])
+def get_user(username):
+    user = db.get_user(username)
+
+    if not user:
+        return {"error": "User not found"}, 404
+
+    return user, 200
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="127.0.0.1", port=5000)

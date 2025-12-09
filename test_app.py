@@ -1,11 +1,10 @@
-from app import db, helper_function
-
+from app import helper_function
 
 # unit test
 def test_helper_function():
-    result = helper_function(2,2)
-    assert result == 4
-
+    assert helper_function(2,2) == 4
+    assert helper_function(0,0) == 0
+    assert helper_function(-5, -4) == -9
 
 
 # api test
@@ -17,10 +16,14 @@ def test_ping_endpoint(client):
 
 
 # integration test
-def test_add_endpoint(client):
-    response = client.post('/add', json={'username': 'abc'})
+def test_user_endpoint(client):
+    response = client.post('/users', json={'username': 'abc', 'firstname': 'FIRSTNAME', 'lastname': 'LASTNAME'})
+    assert response.status_code == 201
+
+    response = client.get('/users/abc')
+    user = response.json
     assert response.status_code == 200
-    assert 'abc' in db
+    assert user['username'] == 'abc'
 
 
 
