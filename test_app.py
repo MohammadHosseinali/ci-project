@@ -7,7 +7,7 @@ def test_helper_function():
     assert helper_function(-5, -4) == -9
 
 
-# api test
+# api test a
 def test_ping_endpoint(client):
     response = client.get("/ping")
     assert response.status_code == 200
