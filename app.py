@@ -4,6 +4,7 @@ from database import Database
 app = Flask(__name__)
 db = Database()
 
+
 def helper_function(m, n):
     return m + n
 
